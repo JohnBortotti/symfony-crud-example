@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./.docker/server/Dockerfile
+    container_name: php
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./.docker/server/apache/sites-available/site.conf:/etc/apache2/sites-available/000-default.conf
+      - ./.docker/server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: mariadb:10.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'secret'
+      MYSQL_PASSWORD: 'secret'
+      MYSQL_DATABASE: 'app'
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./.docker/db/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - app_network
+
+networks:
+  app_network:
+  
+volumes:
+  db_data:
