@@ -117,7 +117,7 @@ class Course implements CourseResourceableInterface
     {
         if (!$this->registrations->contains($registration)) {
             $this->registrations[] = $registration;
-            $registration->setCourseId($this);
+            $registration->setCourse($this);
         }
 
         return $this;
@@ -127,8 +127,8 @@ class Course implements CourseResourceableInterface
     {
         if ($this->registrations->removeElement($registration)) {
             // set the owning side to null (unless already changed)
-            if ($registration->getCourseId() === $this) {
-                $registration->setCourseId(null);
+            if ($registration->getCourse() === $this) {
+                $registration->setCourse(null);
             }
         }
 
